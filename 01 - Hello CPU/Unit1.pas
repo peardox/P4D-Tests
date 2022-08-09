@@ -236,7 +236,7 @@ procedure TForm1.PyEmbeddedResEnvironment391ZipProgress(Sender: TObject;
   ADistribution: TPyCustomEmbeddableDistribution; FileName: string;
   Header: TZipHeader; Position: Int64);
 begin
-  Log('Installing... ' + IntToStr(Position));
+//  Log('Installing... ' + IntToStr(Position));
 end;
 
 procedure TForm1.PyModuleAfterInstall(Sender: TObject);
