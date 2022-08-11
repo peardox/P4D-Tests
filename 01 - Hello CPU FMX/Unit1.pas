@@ -2,15 +2,26 @@ unit Unit1;
 
 interface
 {$IFDEF MSWINDOWS}
- {$DEFINE USETORCH}
+  {$DEFINE USETORCH}
+  {$DEFINE USEPSUTIL}
+{$ENDIF}
+{$IFDEF MACOS}
+  {$DEFINE USETORCH}
+  {$DEFINE USEPSUTIL}
+{$ENDIF}
+{$IFDEF ANDROID}
+  {$DEFINE USETORCH}
+  {$DEFINE USEPSUTIL}
 {$ENDIF}
 
 uses
   System.SysUtils, System.Threading, System.Types, System.UITypes, System.Classes,
   System.Variants,
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs, FMX.Memo.Types,
-  FMX.StdCtrls, FMX.Controls.Presentation, FMX.ScrollBox, FMX.Memo, PyTorch,
-  PyCommon, PyModule, PyPackage, PSUtil, PyEnvironment,
+  FMX.StdCtrls, FMX.Controls.Presentation, FMX.ScrollBox, FMX.Memo,
+  PyTorch,
+  PSUtil,
+  PyCommon, PyModule, PyPackage, PyEnvironment,
   PyEnvironment.Embeddable, PyEnvironment.Embeddable.Res,
   PyEnvironment.Embeddable.Res.Python39, PythonEngine, FMX.PythonGUIInputOutput;
 
@@ -62,11 +73,22 @@ uses
 {$R *.fmx}
 
 procedure TForm1.FormCreate(Sender: TObject);
+var
+  EnvPath: String;
 begin
   PythonEngine1.UseLastKnownVersion := False;
-  PyEmbeddedResEnvironment391.EnvironmentPath := 'python';
+  {$IFDEF ANDROID}
+  EnvPath := IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetHomePath);
+//  EnvPath := IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetPublicPath);
+  {$ELSE}
+  EnvPath := '';
+  {$ENDIF}
+
+  PyEmbeddedResEnvironment391.EnvironmentPath := EnvPath + 'python';
   Caption := 'HelloCPUFMX';
   mmLog.Lines.Clear;
+  Log('Environment Path = ' + PyEmbeddedResEnvironment391.EnvironmentPath);
+//  SetupClick(Self);
 end;
 
 function TForm1.IsTaskRunning: boolean;
@@ -89,38 +111,74 @@ begin
       TThread.Synchronize(nil, procedure() begin
         var act: Boolean := PyEmbeddedResEnvironment391.Activate(PyEmbeddedResEnvironment391.PythonVersion);
         if act then
-          Log('Activated')
+          begin
+            Log('Activated');
+            var Shim: TStringList;
+            Shim := Nil;
+            Shim := TStringList.Create;
+            Shim.Add('import os');
+            Shim.Add('import sys');
+            Shim.Add('import platform');
+            Shim.Add('print("Python version =", sys.version)');
+            Shim.Add('print("CPU =", platform.processor())');
+            Shim.Add('print("Arch =", platform.architecture())');
+            Shim.Add('print("Machine =", platform.machine())');
+            Shim.Add('print("System =", platform.system())');
+            Shim.Add('print("uname parts....")');
+            Shim.Add('for val in platform.uname():');
+            Shim.Add('  print("  uname :",val)');
+
+            Log('Executiing the following Python to check everything works');
+            Log('=========================================================');
+
+            for var i := 0 to Shim.Count - 1 do
+              Log(Shim[i]);
+
+            Log('=========================================================');
+
+            PythonEngine1.ExecStrings(Shim);
+            Log('=========================================================');
+
+            Shim.Free;
+          end
+
         else
           Log('Activation failed');
       end);
 
-      {$IFDEF USETORCH}
       FTask.CheckCanceled();
-      {$IFDEF MSWINDOWS}
+      {$IFDEF USETORCH}
+      Log('Attempting to Install Torch');
       var popts: TPyPackageManagerDefsPip;
       popts := TPyPackageManagerDefsPip(Torch.Managers.Pip);
       popts.InstallOptions.ExtraIndexUrl := 'https://download.pytorch.org/whl/cu116';
-      {$ENDIF}
+      MaskFPUExceptions(true);
       Torch.Install();
+      MaskFPUExceptions(false);
+      Log('Finished Installing Torch');
+      FTask.CheckCanceled();
       {$ENDIF}
 
-      FTask.CheckCanceled();
+      {$IFDEF USEPSUTIL}
+      Log('Attempting to Install PSUtil');
       PSUtil.Install();
-
+      Log('Finished Installing PSUtil');
       FTask.CheckCanceled();
+      {$ENDIF}
+
       TThread.Queue(nil, procedure() begin
         try
-          {$IFDEF MSWINDOWS}
-          MaskFPUExceptions(true);
-          {$ENDIF}
           try
             try
               {$IFDEF USETORCH}
               Log('Importing Torch');
+              MaskFPUExceptions(true);
               Torch.Import();
               {$ENDIF}
+              {$IFDEF USEPSUTIL}
               Log('Importing PSUtil');
               PSUtil.Import();
+              {$ENDIF}
             except
             on E: Exception do begin
               TThread.Queue(nil, procedure() begin
@@ -133,7 +191,7 @@ begin
               end;
             end;
           finally
-            {$IFDEF MSWINDOWS}
+            {$IFDEF USETORCH}
             MaskFPUExceptions(false);
             {$ENDIF}
           end;
@@ -163,43 +221,37 @@ var
   I: Integer;
 {$ENDIF}
 begin
-  if PSUtil.IsInstalled then
+  {$IFDEF USEPSUTIL}
+  var cpu_cores: Variant := PSUtil.psutil.cpu_count(False);
+  var cpu_threads: Variant := PSUtil.psutil.cpu_count(True);
+  var cpu_freq: Variant := PSUtil.psutil.cpu_freq();
+  var virtual_memory: Variant := PSUtil.psutil.virtual_memory();
+  {$ENDIF}
+
+  {$IFDEF USETORCH}
+  var gpu_count: Variant := Torch.torch.cuda.device_count();
+  Log('Torch returned gpu_count = ' + gpu_count);
+  if gpu_count > 0 then
     begin
-      if PSUtil.IsImported then
+      for I := 0 to gpu_count - 1 do
         begin
-          var cpu_cores: Variant := PSUtil.psutil.cpu_count(False);
-          var cpu_threads: Variant := PSUtil.psutil.cpu_count(True);
-          var cpu_freq: Variant := PSUtil.psutil.cpu_freq();
-          var virtual_memory: Variant := PSUtil.psutil.virtual_memory();
+          var gpu_props: Variant := Torch.torch.cuda.get_device_properties(i);
 
-          {$IFDEF USETORCH}
-          var gpu_count: Variant := Torch.torch.cuda.device_count();
-          Log('Torch returned gpu_count = ' + gpu_count);
-          if gpu_count > 0 then
-            begin
-              for I := 0 to gpu_count - 1 do
-                begin
-                  var gpu_props: Variant := Torch.torch.cuda.get_device_properties(i);
-
-                  Log('Torch returned Name = ' + gpu_props.name);
-                  Log('Torch returned CudaMajor = ' + gpu_props.major);
-                  Log('Torch returned CudaMajor = ' + gpu_props.minor);
-                  Log('Torch returned Memory = ' + gpu_props.total_memory);
-                  Log('Torch returned CUs = ' + gpu_props.multi_processor_count);
-                end;
-            end;
-          {$ENDIF}
-          Log('PSUtil returned cpu_cores = ' + cpu_cores);
-          Log('PSUtil returned cpu_threads = ' + cpu_threads);
-          Log('PSUtil returned cpu_freq = ' + cpu_freq.current);
-          Log('PSUtil returned total_memory = ' + virtual_memory.total);
-          Log('PSUtil returned available_memory = ' + virtual_memory.available);
-        end
-      else
-        Log('PSUttil did not import correctly');
-    end
-  else
-    Log('PSUttil did not install correctly');
+          Log('Torch returned Name = ' + gpu_props.name);
+          Log('Torch returned CudaMajor = ' + gpu_props.major);
+          Log('Torch returned CudaMajor = ' + gpu_props.minor);
+          Log('Torch returned Memory = ' + gpu_props.total_memory);
+          Log('Torch returned CUs = ' + gpu_props.multi_processor_count);
+        end;
+    end;
+  {$ENDIF}
+  {$IFDEF USEPSUTIL}
+  Log('PSUtil returned cpu_cores = ' + cpu_cores);
+  Log('PSUtil returned cpu_threads = ' + cpu_threads);
+  Log('PSUtil returned cpu_freq = ' + cpu_freq.current);
+  Log('PSUtil returned total_memory = ' + virtual_memory.total);
+  Log('PSUtil returned available_memory = ' + virtual_memory.available);
+  {$ENDIF}
 end;
 
 procedure TForm1.Log(const AMsg: string);
@@ -247,6 +299,5 @@ begin
     TPyPackage(Sender).PyModuleName,
     AErrorMessage]));
 end;
-
 
 end.
