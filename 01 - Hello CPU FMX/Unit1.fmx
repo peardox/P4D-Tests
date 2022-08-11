@@ -62,16 +62,6 @@ object Form1: TForm1
     Left = 248
     Top = 128
   end
-  object PyEmbeddedResEnvironment391: TPyEmbeddedResEnvironment39
-    BeforeSetup = PyEmbeddedResEnvironment391BeforeSetup
-    AfterSetup = PyEmbeddedResEnvironment391AfterSetup
-    OnReady = PyEmbeddedResEnvironment391Ready
-    AutoLoad = False
-    PythonVersion = '3.9'
-    PythonEngine = PythonEngine1
-    Left = 248
-    Top = 200
-  end
   object PSUtil: TPSUtil
     AutoImport = False
     PythonEngine = PythonEngine1
@@ -107,5 +97,12 @@ object Form1: TForm1
     AfterInstall = PyModuleAfterInstall
     Left = 336
     Top = 296
+  end
+  object PyEmbeddedResEnvironment391: TPyEmbeddedResEnvironment39
+    AutoLoad = False
+    PythonVersion = '3.9'
+    PythonEngine = PythonEngine1
+    Left = 256
+    Top = 224
   end
 end

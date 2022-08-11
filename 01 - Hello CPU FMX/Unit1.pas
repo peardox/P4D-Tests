@@ -30,7 +30,6 @@ type
   TForm1 = class(TForm)
     PythonEngine1: TPythonEngine;
     PythonGUIInputOutput1: TPythonGUIInputOutput;
-    PyEmbeddedResEnvironment391: TPyEmbeddedResEnvironment39;
     PSUtil: TPSUtil;
     Torch: TPyTorch;
     mmLog: TMemo;
@@ -39,6 +38,7 @@ type
     btnTest: TButton;
     Button1: TButton;
     NumPy: TNumPy;
+    PyEmbeddedResEnvironment391: TPyEmbeddedResEnvironment39;
     procedure SetupClick(Sender: TObject);
     procedure btnTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
