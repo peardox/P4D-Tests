@@ -41,6 +41,13 @@ object Form1: TForm1
       Text = 'Test'
       OnClick = btnTestClick
     end
+    object Button1: TButton
+      Position.X = 216.000000000000000000
+      Position.Y = 8.000000000000000000
+      TabOrder = 2
+      Text = 'List Files'
+      OnClick = Button1Click
+    end
   end
   object PythonEngine1: TPythonEngine
     AutoLoad = False
@@ -66,9 +73,11 @@ object Form1: TForm1
     Top = 200
   end
   object PSUtil: TPSUtil
+    AutoImport = False
     PythonEngine = PythonEngine1
     PyEnvironment = PyEmbeddedResEnvironment391
     ManagerKind = pip
+    AutoInstall = False
     BeforeInstall = PyModuleBeforeInstall
     OnInstallError = PyModuleInstallError
     AfterInstall = PyModuleAfterInstall
@@ -76,13 +85,27 @@ object Form1: TForm1
     Top = 296
   end
   object Torch: TPyTorch
+    AutoImport = False
     PythonEngine = PythonEngine1
     PyEnvironment = PyEmbeddedResEnvironment391
     ManagerKind = pip
+    AutoInstall = False
     BeforeInstall = PyModuleBeforeInstall
     OnInstallError = PyModuleInstallError
     AfterInstall = PyModuleAfterInstall
     Left = 248
     Top = 376
+  end
+  object NumPy: TNumPy
+    AutoImport = False
+    PythonEngine = PythonEngine1
+    PyEnvironment = PyEmbeddedResEnvironment391
+    ManagerKind = pip
+    AutoInstall = False
+    BeforeInstall = PyModuleBeforeInstall
+    OnInstallError = PyModuleInstallError
+    AfterInstall = PyModuleAfterInstall
+    Left = 336
+    Top = 296
   end
 end

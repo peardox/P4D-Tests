@@ -10,8 +10,8 @@ interface
   {$DEFINE USEPSUTIL}
 {$ENDIF}
 {$IFDEF ANDROID}
-  {$DEFINE USETORCH}
-  {$DEFINE USEPSUTIL}
+//  {$DEFINE USETORCH}
+//  {$DEFINE USEPSUTIL}
 {$ENDIF}
 
 uses
@@ -23,7 +23,8 @@ uses
   PSUtil,
   PyCommon, PyModule, PyPackage, PyEnvironment,
   PyEnvironment.Embeddable, PyEnvironment.Embeddable.Res,
-  PyEnvironment.Embeddable.Res.Python39, PythonEngine, FMX.PythonGUIInputOutput;
+  PyEnvironment.Embeddable.Res.Python39, PythonEngine, FMX.PythonGUIInputOutput,
+  NumPy;
 
 type
   TForm1 = class(TForm)
@@ -36,6 +37,8 @@ type
     Panel1: TPanel;
     Setup: TButton;
     btnTest: TButton;
+    Button1: TButton;
+    NumPy: TNumPy;
     procedure SetupClick(Sender: TObject);
     procedure btnTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -48,13 +51,17 @@ type
     procedure PyModuleAfterInstall(Sender: TObject);
     procedure PyModuleBeforeInstall(Sender: TObject);
     procedure PyModuleInstallError(Sender: TObject; AErrorMessage: string);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     FTask: ITask;
     function IsTaskRunning(): boolean;
-    procedure Log(const AMsg: string);
+    procedure Log(const AMsg: string; const Prefix: String = '');
+    procedure SetupPythonUnthreaded;
+    procedure ListPythonFiles(const PythonDir: String; const Depth: Cardinal = 0);
   public
     { Public declarations }
+    EnvPath: String;
   end;
 
 var
@@ -72,14 +79,16 @@ uses
 
 {$R *.fmx}
 
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  ListPythonFiles(PyEmbeddedResEnvironment391.EnvironmentPath);
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
-var
-  EnvPath: String;
 begin
   PythonEngine1.UseLastKnownVersion := False;
   {$IFDEF ANDROID}
   EnvPath := IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetHomePath);
-//  EnvPath := IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetPublicPath);
   {$ELSE}
   EnvPath := '';
   {$ENDIF}
@@ -88,7 +97,7 @@ begin
   Caption := 'HelloCPUFMX';
   mmLog.Lines.Clear;
   Log('Environment Path = ' + PyEmbeddedResEnvironment391.EnvironmentPath);
-//  SetupClick(Self);
+  SetupClick(Self);
 end;
 
 function TForm1.IsTaskRunning: boolean;
@@ -147,6 +156,10 @@ begin
       end);
 
       FTask.CheckCanceled();
+      Log('Attempting to Install NumPy');
+      NumPy.Install();
+
+      FTask.CheckCanceled();
       {$IFDEF USETORCH}
       Log('Attempting to Install Torch');
       var popts: TPyPackageManagerDefsPip;
@@ -171,6 +184,8 @@ begin
           try
             try
               {$IFDEF USETORCH}
+              Log('Importing NumPy');
+              NumPy.Import();
               Log('Importing Torch');
               MaskFPUExceptions(true);
               Torch.Import();
@@ -215,6 +230,81 @@ begin
   end);
 end;
 
+procedure TForm1.SetupPythonUnthreaded;
+begin
+  Setup.Enabled := false;
+  btnTest.Enabled := false;
+
+  try
+    PyEmbeddedResEnvironment391.Setup(PyEmbeddedResEnvironment391.PythonVersion);
+    var act: Boolean := PyEmbeddedResEnvironment391.Activate(PyEmbeddedResEnvironment391.PythonVersion);
+    if act then
+        Log('Activated')
+    else
+      Log('Activation failed');
+
+    NumPy.Install();
+
+    {$IFDEF USETORCH}
+    Log('Attempting to Install Torch');
+    var popts: TPyPackageManagerDefsPip;
+    popts := TPyPackageManagerDefsPip(Torch.Managers.Pip);
+    popts.InstallOptions.ExtraIndexUrl := 'https://download.pytorch.org/whl/cu116';
+    MaskFPUExceptions(true);
+    Torch.Install();
+    MaskFPUExceptions(false);
+    Log('Finished Installing Torch');
+    {$ENDIF}
+
+    {$IFDEF USEPSUTIL}
+    Log('Attempting to Install PSUtil');
+    PSUtil.Install();
+    Log('Finished Installing PSUtil');
+    {$ENDIF}
+
+    try
+      try
+        try
+          NumPy.Import();
+          {$IFDEF USETORCH}
+          Log('Importing Torch');
+          MaskFPUExceptions(true);
+          Torch.Import();
+          {$ENDIF}
+          {$IFDEF USEPSUTIL}
+          Log('Importing PSUtil');
+          PSUtil.Import();
+          {$ENDIF}
+        except
+        on E: Exception do begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORTexception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+          end;
+        end;
+      finally
+        {$IFDEF USETORCH}
+        MaskFPUExceptions(false);
+        {$ENDIF}
+      end;
+    finally
+      Setup.Enabled := true;
+      btnTest.Enabled := true;
+    end;
+    Log('All done!');
+  except
+    on E: Exception do begin
+      Setup.Enabled := false;
+      btnTest.Enabled := false;
+      Log('An INSTALL exception was caught');
+      Log('Class : ' + E.ClassName);
+      Log('Error : ' + E.Message);
+    end;
+  end;
+end;
+
 procedure TForm1.btnTestClick(Sender: TObject);
 {$IFDEF USETORCH}
 var
@@ -254,14 +344,20 @@ begin
   {$ENDIF}
 end;
 
-procedure TForm1.Log(const AMsg: string);
+procedure TForm1.Log(const AMsg: string; const Prefix: String = '');
 begin
   if TThread.CurrentThread.ThreadID <> MainThreadID then
     TThread.Synchronize(nil, procedure() begin
-      mmLog.Lines.Add('-> ' + AMsg);
+      mmLog.Lines.Add(Prefix + AMsg);
+      mmLog.GoToTextEnd;
+      mmLog.Repaint;
     end)
   else
-    mmLog.Lines.Add('-> ' + AMsg);
+    begin
+      mmLog.Lines.Add(Prefix + AMsg);
+      mmLog.GoToTextEnd;
+      mmLog.Repaint;
+    end;
 end;
 
 
@@ -298,6 +394,45 @@ begin
   Log(Format('%s installation failed.' + #13#10 + '%s', [
     TPyPackage(Sender).PyModuleName,
     AErrorMessage]));
+end;
+
+procedure TForm1.ListPythonFiles(const PythonDir: String; const Depth: Cardinal = 0);
+var
+  SearchRec: TSearchRec;
+  filespec: String;
+  FileName: String;
+  spacer: String;
+begin
+  filespec := IncludeTrailingPathDelimiter(PythonDir);
+
+  {$ifdef MSWINDOWS}
+  filespec := filespec + '*.*';
+  {$ELSE}
+  filespec := filespec + '*';
+  {$ENDIF}
+
+  spacer := StringOfChar(' ', Depth * 2);
+
+  if (FindFirst(filespec, faAnyFile, SearchRec) = 0) then
+    begin
+      repeat
+        FileName := SearchRec.Name;
+        if ((SearchRec.Attr and faDirectory) = 0) then
+          begin
+            Log(spacer + FileName);
+          end
+        else
+          begin
+            if (FileName <> '.') and (FileName <> '..') then
+              begin
+                Log(spacer + FileName);
+                ListPythonFiles(PythonDir + System.IOUtils.TPath.DirectorySeparatorChar + FileName, Depth + 1);
+              end;
+          end;
+      until FindNext(SearchRec) <> 0;
+      FindClose(SearchRec);
+    end;
+    mmLog.Lines.SaveToFile(EnvPath + 'PythonFileList.txt');
 end;
 
 end.
