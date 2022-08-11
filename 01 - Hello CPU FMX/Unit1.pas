@@ -93,7 +93,7 @@ begin
   EnvPath := '';
   {$ENDIF}
 
-  PyEmbeddedResEnvironment391.EnvironmentPath := EnvPath + 'python';
+//  PyEmbeddedResEnvironment391.EnvironmentPath := EnvPath + 'python';
   Caption := 'HelloCPUFMX';
   mmLog.Lines.Clear;
   Log('Environment Path = ' + PyEmbeddedResEnvironment391.EnvironmentPath);
