@@ -4,14 +4,17 @@ interface
 {$IFDEF MSWINDOWS}
   {$DEFINE USETORCH}
   {$DEFINE USEPSUTIL}
+  {$DEFINE USENUMPY}
 {$ENDIF}
 {$IFDEF MACOS}
   {$DEFINE USETORCH}
   {$DEFINE USEPSUTIL}
+  {$DEFINE USENUMPY}
 {$ENDIF}
 {$IFDEF ANDROID}
 //  {$DEFINE USETORCH}
-//  {$DEFINE USEPSUTIL}
+  {$DEFINE USEPSUTIL}
+//  {$DEFINE USENUMPY}
 {$ENDIF}
 
 uses
@@ -88,12 +91,12 @@ procedure TForm1.FormCreate(Sender: TObject);
 begin
   PythonEngine1.UseLastKnownVersion := False;
   {$IFDEF ANDROID}
-  EnvPath := IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetHomePath);
+  EnvPath := IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetDocumentsPath);
   {$ELSE}
   EnvPath := '';
   {$ENDIF}
 
-//  PyEmbeddedResEnvironment391.EnvironmentPath := EnvPath + 'python';
+  PyEmbeddedResEnvironment391.EnvironmentPath := EnvPath + 'python';
   Caption := 'HelloCPUFMX';
   mmLog.Lines.Clear;
   Log('Environment Path = ' + PyEmbeddedResEnvironment391.EnvironmentPath);
@@ -156,18 +159,25 @@ begin
       end);
 
       FTask.CheckCanceled();
+
+      {$IFDEF USENUMPY}
       Log('Attempting to Install NumPy');
       NumPy.Install();
-
       FTask.CheckCanceled();
+      {$ENDIF}
+
       {$IFDEF USETORCH}
       Log('Attempting to Install Torch');
       var popts: TPyPackageManagerDefsPip;
       popts := TPyPackageManagerDefsPip(Torch.Managers.Pip);
       popts.InstallOptions.ExtraIndexUrl := 'https://download.pytorch.org/whl/cu116';
+      {$IFDEF CPUX64}
       MaskFPUExceptions(true);
+      {$ENDIF}
       Torch.Install();
+      {$IFDEF CPUX64}
       MaskFPUExceptions(false);
+      {$ENDIF}
       Log('Finished Installing Torch');
       FTask.CheckCanceled();
       {$ENDIF}
@@ -183,11 +193,15 @@ begin
         try
           try
             try
-              {$IFDEF USETORCH}
+              {$IFDEF USENUMPY}
               Log('Importing NumPy');
               NumPy.Import();
+              {$ENDIF}
+              {$IFDEF USETORCH}
               Log('Importing Torch');
+              {$IFDEF CPUX64}
               MaskFPUExceptions(true);
+              {$ENDIF}
               Torch.Import();
               {$ENDIF}
               {$IFDEF USEPSUTIL}
@@ -206,7 +220,7 @@ begin
               end;
             end;
           finally
-            {$IFDEF USETORCH}
+            {$IFDEF CPUX64}
             MaskFPUExceptions(false);
             {$ENDIF}
           end;
@@ -243,16 +257,23 @@ begin
     else
       Log('Activation failed');
 
+    {$IFDEF USENUMPY}
+    Log('Attempting to Install Numpy');
     NumPy.Install();
+    {$ENDIF}
 
     {$IFDEF USETORCH}
     Log('Attempting to Install Torch');
     var popts: TPyPackageManagerDefsPip;
     popts := TPyPackageManagerDefsPip(Torch.Managers.Pip);
     popts.InstallOptions.ExtraIndexUrl := 'https://download.pytorch.org/whl/cu116';
+    {$IFDEF CPUX64}
     MaskFPUExceptions(true);
+    {$ENDIF}
     Torch.Install();
+    {$IFDEF CPUX64}
     MaskFPUExceptions(false);
+    {$ENDIF}
     Log('Finished Installing Torch');
     {$ENDIF}
 
@@ -265,10 +286,14 @@ begin
     try
       try
         try
+          {$IFDEF USENUMPY}
           NumPy.Import();
+          {$ENDIF}
           {$IFDEF USETORCH}
           Log('Importing Torch');
+          {$IFDEF CPUX64}
           MaskFPUExceptions(true);
+          {$ENDIF}
           Torch.Import();
           {$ENDIF}
           {$IFDEF USEPSUTIL}
@@ -285,7 +310,7 @@ begin
           end;
         end;
       finally
-        {$IFDEF USETORCH}
+        {$IFDEF CPUX64}
         MaskFPUExceptions(false);
         {$ENDIF}
       end;
