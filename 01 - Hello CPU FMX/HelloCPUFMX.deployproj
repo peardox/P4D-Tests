@@ -864,8 +864,8 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Debug' And '$(AndroidAppBundle)'=='true'">
-            <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\python3.9" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
             <RemoteName>python3.9</RemoteName>
             <DeployClass>Python</DeployClass>
             <Operation>1</Operation>
@@ -874,8 +874,8 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\python3.9" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Debug' And '$(AndroidAppBundle)'=='true'">
+            <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>python3.9</RemoteName>
             <DeployClass>Python</DeployClass>
             <Operation>1</Operation>

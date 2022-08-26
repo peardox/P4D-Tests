@@ -2,19 +2,37 @@ unit Unit1;
 
 interface
 {$IFDEF MSWINDOWS}
+  {$DEFINE USETORCHVISION}
   {$DEFINE USETORCH}
   {$DEFINE USEPSUTIL}
   {$DEFINE USENUMPY}
+  {$DEFINE USEONNXRUNTIME}
+  {$DEFINE USEBOTO3}
+  {$DEFINE USEREMBG}
+  {$DEFINE USESCIPY}
+  {$DEFINE USEPILLOW}
 {$ENDIF}
 {$IFDEF MACOS}
+  {$DEFINE USETORCHVISION}
   {$DEFINE USETORCH}
-  {$DEFINE USEPSUTIL}
+//  {$DEFINE USEPSUTIL}
   {$DEFINE USENUMPY}
+  {$DEFINE USEONNXRUNTIME}
+  {$DEFINE USEBOTO3}
+  {$DEFINE USEREMBG}
+  {$DEFINE USESCIPY}
+  {$DEFINE USEPILLOW}
 {$ENDIF}
 {$IFDEF ANDROID}
+//  {$DEFINE USETORCHVISION}
 //  {$DEFINE USETORCH}
-  {$DEFINE USEPSUTIL}
+//  {$DEFINE USEPSUTIL}
 //  {$DEFINE USENUMPY}
+//  {$DEFINE USEONNXRUNTIME}
+  {$DEFINE USEBOTO3}
+//  {$DEFINE USEREMBG}
+//  {$DEFINE USESCIPY}
+//  {$DEFINE USEPILLOW}
 {$ENDIF}
 
 uses
@@ -27,21 +45,28 @@ uses
   PyCommon, PyModule, PyPackage, PyEnvironment,
   PyEnvironment.Embeddable, PyEnvironment.Embeddable.Res,
   PyEnvironment.Embeddable.Res.Python39, PythonEngine, FMX.PythonGUIInputOutput,
-  NumPy;
+  NumPy, PyEnvironment.AddOn, PyEnvironment.AddOn.GetPip, SciPy, Pillow, RemBG,
+  Boto3, ONNXRuntime, TorchVision;
 
 type
   TForm1 = class(TForm)
     PythonEngine1: TPythonEngine;
     PythonGUIInputOutput1: TPythonGUIInputOutput;
-    PSUtil: TPSUtil;
     Torch: TPyTorch;
     mmLog: TMemo;
     Panel1: TPanel;
     Setup: TButton;
     btnTest: TButton;
-    Button1: TButton;
     NumPy: TNumPy;
     PyEmbeddedResEnvironment391: TPyEmbeddedResEnvironment39;
+    PyEnvironmentAddOnGetPip1: TPyEnvironmentAddOnGetPip;
+    ONNXRuntime: TONNXRuntime;
+    Boto3: TBoto3;
+    RemBG: TRemBG;
+    Pillow: TPillow;
+    SciPy: TSciPy;
+    TorchVision: TTorchVision;
+    PSUtil: TPSUtil;
     procedure SetupClick(Sender: TObject);
     procedure btnTestClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -54,13 +79,11 @@ type
     procedure PyModuleAfterInstall(Sender: TObject);
     procedure PyModuleBeforeInstall(Sender: TObject);
     procedure PyModuleInstallError(Sender: TObject; AErrorMessage: string);
-    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     FTask: ITask;
     function IsTaskRunning(): boolean;
     procedure Log(const AMsg: string; const Prefix: String = '');
-    procedure SetupPythonUnthreaded;
     procedure ListPythonFiles(const PythonDir: String; const Depth: Cardinal = 0);
   public
     { Public declarations }
@@ -82,13 +105,9 @@ uses
 
 {$R *.fmx}
 
-procedure TForm1.Button1Click(Sender: TObject);
-begin
-  ListPythonFiles(PyEmbeddedResEnvironment391.EnvironmentPath);
-end;
-
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+
   PythonEngine1.UseLastKnownVersion := False;
   {$IFDEF ANDROID}
   EnvPath := IncludeTrailingPathDelimiter(System.IOUtils.TPath.GetDocumentsPath);
@@ -128,18 +147,11 @@ begin
             var Shim: TStringList;
             Shim := Nil;
             Shim := TStringList.Create;
-            Shim.Add('import os');
             Shim.Add('import sys');
-            Shim.Add('import platform');
-            Shim.Add('print("Python version =", sys.version)');
-            Shim.Add('print("CPU =", platform.processor())');
-            Shim.Add('print("Arch =", platform.architecture())');
-            Shim.Add('print("Machine =", platform.machine())');
-            Shim.Add('print("System =", platform.system())');
-            Shim.Add('print("uname parts....")');
-            Shim.Add('for val in platform.uname():');
-            Shim.Add('  print("  uname :",val)');
-
+            Shim.Add('import pip');
+            Shim.Add('print("pip =", pip.__version__)');
+            Shim.Add('for p in sys.path:');
+            Shim.Add('  print(p)');
             Log('Executiing the following Python to check everything works');
             Log('=========================================================');
 
@@ -160,21 +172,157 @@ begin
 
       FTask.CheckCanceled();
 
+      {$IFDEF USEPILLOW}
+      Log('Attempting to Install Pillow');
+      try
+        Pillow.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
+      FTask.CheckCanceled();
+      {$ENDIF}
+
+      {$IFDEF USESCIPY}
+      Log('Attempting to Install SciPy');
+      try
+        SciPy.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
+      FTask.CheckCanceled();
+      {$ENDIF}
+
+      {$IFDEF USEREMBG}
+      Log('Attempting to Install RemBG');
+      try
+        RemBG.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
+      FTask.CheckCanceled();
+      {$ENDIF}
+
+      {$IFDEF USEBOTO3}
+      Log('Attempting to Install Boto3');
+      try
+        Boto3.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
+      FTask.CheckCanceled();
+      {$ENDIF}
+
+      {$IFDEF USEONNXRUNTIME}
+      Log('Attempting to Install ONNXRuntime');
+      try
+        ONNXRuntime.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
+      FTask.CheckCanceled();
+      {$ENDIF}
+
       {$IFDEF USENUMPY}
       Log('Attempting to Install NumPy');
-      NumPy.Install();
+      try
+        NumPy.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
       FTask.CheckCanceled();
       {$ENDIF}
 
       {$IFDEF USETORCH}
       Log('Attempting to Install Torch');
-      var popts: TPyPackageManagerDefsPip;
-      popts := TPyPackageManagerDefsPip(Torch.Managers.Pip);
-      popts.InstallOptions.ExtraIndexUrl := 'https://download.pytorch.org/whl/cu116';
       {$IFDEF CPUX64}
       MaskFPUExceptions(true);
       {$ENDIF}
-      Torch.Install();
+      try
+       Torch.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
+      {$IFDEF CPUX64}
+      MaskFPUExceptions(false);
+      {$ENDIF}
+      Log('Finished Installing Torch');
+      FTask.CheckCanceled();
+      {$ENDIF}
+
+      {$IFDEF USETORCHVISION}
+      Log('Attempting to Install TorchVision');
+      {$IFDEF CPUX64}
+      MaskFPUExceptions(true);
+      {$ENDIF}
+      try
+       TorchVision.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
       {$IFDEF CPUX64}
       MaskFPUExceptions(false);
       {$ENDIF}
@@ -184,7 +332,19 @@ begin
 
       {$IFDEF USEPSUTIL}
       Log('Attempting to Install PSUtil');
-      PSUtil.Install();
+      try
+        PSUtil.Install();
+      except
+      on E: Exception do begin
+        TThread.Queue(nil, procedure() begin
+          Setup.Enabled := false;
+          btnTest.Enabled := false;
+          Log('An IMPORT exception was caught');
+          Log('Class : ' + E.ClassName);
+          Log('Error : ' + E.Message);
+        end);
+        end;
+      end;
       Log('Finished Installing PSUtil');
       FTask.CheckCanceled();
       {$ENDIF}
@@ -213,7 +373,7 @@ begin
               TThread.Queue(nil, procedure() begin
                 Setup.Enabled := false;
                 btnTest.Enabled := false;
-                Log('An IMPORTexception was caught');
+                Log('An IMPORT exception was caught');
                 Log('Class : ' + E.ClassName);
                 Log('Error : ' + E.Message);
               end);
@@ -244,91 +404,6 @@ begin
   end);
 end;
 
-procedure TForm1.SetupPythonUnthreaded;
-begin
-  Setup.Enabled := false;
-  btnTest.Enabled := false;
-
-  try
-    PyEmbeddedResEnvironment391.Setup(PyEmbeddedResEnvironment391.PythonVersion);
-    var act: Boolean := PyEmbeddedResEnvironment391.Activate(PyEmbeddedResEnvironment391.PythonVersion);
-    if act then
-        Log('Activated')
-    else
-      Log('Activation failed');
-
-    {$IFDEF USENUMPY}
-    Log('Attempting to Install Numpy');
-    NumPy.Install();
-    {$ENDIF}
-
-    {$IFDEF USETORCH}
-    Log('Attempting to Install Torch');
-    var popts: TPyPackageManagerDefsPip;
-    popts := TPyPackageManagerDefsPip(Torch.Managers.Pip);
-    popts.InstallOptions.ExtraIndexUrl := 'https://download.pytorch.org/whl/cu116';
-    {$IFDEF CPUX64}
-    MaskFPUExceptions(true);
-    {$ENDIF}
-    Torch.Install();
-    {$IFDEF CPUX64}
-    MaskFPUExceptions(false);
-    {$ENDIF}
-    Log('Finished Installing Torch');
-    {$ENDIF}
-
-    {$IFDEF USEPSUTIL}
-    Log('Attempting to Install PSUtil');
-    PSUtil.Install();
-    Log('Finished Installing PSUtil');
-    {$ENDIF}
-
-    try
-      try
-        try
-          {$IFDEF USENUMPY}
-          NumPy.Import();
-          {$ENDIF}
-          {$IFDEF USETORCH}
-          Log('Importing Torch');
-          {$IFDEF CPUX64}
-          MaskFPUExceptions(true);
-          {$ENDIF}
-          Torch.Import();
-          {$ENDIF}
-          {$IFDEF USEPSUTIL}
-          Log('Importing PSUtil');
-          PSUtil.Import();
-          {$ENDIF}
-        except
-        on E: Exception do begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORTexception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-          end;
-        end;
-      finally
-        {$IFDEF CPUX64}
-        MaskFPUExceptions(false);
-        {$ENDIF}
-      end;
-    finally
-      Setup.Enabled := true;
-      btnTest.Enabled := true;
-    end;
-    Log('All done!');
-  except
-    on E: Exception do begin
-      Setup.Enabled := false;
-      btnTest.Enabled := false;
-      Log('An INSTALL exception was caught');
-      Log('Class : ' + E.ClassName);
-      Log('Error : ' + E.Message);
-    end;
-  end;
-end;
 
 procedure TForm1.btnTestClick(Sender: TObject);
 {$IFDEF USETORCH}
@@ -339,7 +414,6 @@ begin
   {$IFDEF USEPSUTIL}
   var cpu_cores: Variant := PSUtil.psutil.cpu_count(False);
   var cpu_threads: Variant := PSUtil.psutil.cpu_count(True);
-  var cpu_freq: Variant := PSUtil.psutil.cpu_freq();
   var virtual_memory: Variant := PSUtil.psutil.virtual_memory();
   {$ENDIF}
 
@@ -363,7 +437,6 @@ begin
   {$IFDEF USEPSUTIL}
   Log('PSUtil returned cpu_cores = ' + cpu_cores);
   Log('PSUtil returned cpu_threads = ' + cpu_threads);
-  Log('PSUtil returned cpu_freq = ' + cpu_freq.current);
   Log('PSUtil returned total_memory = ' + virtual_memory.total);
   Log('PSUtil returned available_memory = ' + virtual_memory.available);
   {$ENDIF}

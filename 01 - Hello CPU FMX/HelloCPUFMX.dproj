@@ -4,8 +4,8 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>FMX</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
-        <Platform Condition="'$(Platform)'==''">Android64</Platform>
+        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Platform Condition="'$(Platform)'==''">Win64</Platform>
         <TargetedPlatforms>37915</TargetedPlatforms>
         <AppType>Application</AppType>
         <MainSource>HelloCPUFMX.dpr</MainSource>
@@ -309,6 +309,7 @@
                     <Source Name="MainSource">HelloCPUFMX.dpr</Source>
                 </Source>
                 <Excluded_Packages>
+                    <Excluded_Packages Name="C:\Users\Public\Documents\Embarcadero\Studio\21.0\Bpl\dclP4DCV2Contrib270.bpl">File C:\Users\Public\Documents\Embarcadero\Studio\21.0\Bpl\dclP4DCV2Contrib270.bpl not found</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k270.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dclofficexp270.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
@@ -859,17 +860,17 @@
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile Condition="'$(AndroidAppBundle)'=='true'" Required="true" LocalName="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Configuration="Debug" Class="Python">
+                <DeployFile Required="true" LocalName="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\python3.9" Configuration="Release" Class="Python">
                     <Platform Name="Android64">
-                        <RemoteDir>library\lib\armeabi-v7a\</RemoteDir>
+                        <RemoteDir>library\lib\arm64-v8a\</RemoteDir>
                         <Operation>1</Operation>
                         <RemoteName>python3.9</RemoteName>
                         <Overwrite>true</Overwrite>
                     </Platform>
                 </DeployFile>
-                <DeployFile Required="true" LocalName="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\python3.9" Configuration="Release" Class="Python">
+                <DeployFile Condition="'$(AndroidAppBundle)'=='true'" Required="true" LocalName="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Configuration="Debug" Class="Python">
                     <Platform Name="Android64">
-                        <RemoteDir>library\lib\arm64-v8a\</RemoteDir>
+                        <RemoteDir>library\lib\armeabi-v7a\</RemoteDir>
                         <Operation>1</Operation>
                         <RemoteName>python3.9</RemoteName>
                         <Overwrite>true</Overwrite>
