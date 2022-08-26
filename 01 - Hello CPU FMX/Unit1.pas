@@ -164,210 +164,11 @@ begin
             Log('=========================================================');
 
             Shim.Free;
-          end
 
-        else
-          Log('Activation failed');
-      end);
-
-      FTask.CheckCanceled();
-
-      {$IFDEF USEPILLOW}
-      Log('Attempting to Install Pillow');
-      try
-        Pillow.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      {$IFDEF USESCIPY}
-      Log('Attempting to Install SciPy');
-      try
-        SciPy.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      {$IFDEF USEREMBG}
-      Log('Attempting to Install RemBG');
-      try
-        RemBG.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      {$IFDEF USEBOTO3}
-      Log('Attempting to Install Boto3');
-      try
-        Boto3.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      {$IFDEF USEONNXRUNTIME}
-      Log('Attempting to Install ONNXRuntime');
-      try
-        ONNXRuntime.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      {$IFDEF USENUMPY}
-      Log('Attempting to Install NumPy');
-      try
-        NumPy.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      {$IFDEF USETORCH}
-      Log('Attempting to Install Torch');
-      {$IFDEF CPUX64}
-      MaskFPUExceptions(true);
-      {$ENDIF}
-      try
-       Torch.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      {$IFDEF CPUX64}
-      MaskFPUExceptions(false);
-      {$ENDIF}
-      Log('Finished Installing Torch');
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      {$IFDEF USETORCHVISION}
-      Log('Attempting to Install TorchVision');
-      {$IFDEF CPUX64}
-      MaskFPUExceptions(true);
-      {$ENDIF}
-      try
-       TorchVision.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      {$IFDEF CPUX64}
-      MaskFPUExceptions(false);
-      {$ENDIF}
-      Log('Finished Installing Torch');
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      {$IFDEF USEPSUTIL}
-      Log('Attempting to Install PSUtil');
-      try
-        PSUtil.Install();
-      except
-      on E: Exception do begin
-        TThread.Queue(nil, procedure() begin
-          Setup.Enabled := false;
-          btnTest.Enabled := false;
-          Log('An IMPORT exception was caught');
-          Log('Class : ' + E.ClassName);
-          Log('Error : ' + E.Message);
-        end);
-        end;
-      end;
-      Log('Finished Installing PSUtil');
-      FTask.CheckCanceled();
-      {$ENDIF}
-
-      TThread.Queue(nil, procedure() begin
-        try
-          try
+            {$IFDEF USEPILLOW}
+            Log('Attempting to Install Pillow');
             try
-              {$IFDEF USENUMPY}
-              Log('Importing NumPy');
-              NumPy.Import();
-              {$ENDIF}
-              {$IFDEF USETORCH}
-              Log('Importing Torch');
-              {$IFDEF CPUX64}
-              MaskFPUExceptions(true);
-              {$ENDIF}
-              Torch.Import();
-              {$ENDIF}
-              {$IFDEF USEPSUTIL}
-              Log('Importing PSUtil');
-              PSUtil.Import();
-              {$ENDIF}
+              Pillow.Install();
             except
             on E: Exception do begin
               TThread.Queue(nil, procedure() begin
@@ -379,17 +180,223 @@ begin
               end);
               end;
             end;
-          finally
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            {$IFDEF USESCIPY}
+            Log('Attempting to Install SciPy');
+            try
+              SciPy.Install();
+            except
+            on E: Exception do begin
+              TThread.Queue(nil, procedure() begin
+                Setup.Enabled := false;
+                btnTest.Enabled := false;
+                Log('An IMPORT exception was caught');
+                Log('Class : ' + E.ClassName);
+                Log('Error : ' + E.Message);
+              end);
+              end;
+            end;
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            {$IFDEF USEREMBG}
+            Log('Attempting to Install RemBG');
+            try
+              RemBG.Install();
+            except
+            on E: Exception do begin
+              TThread.Queue(nil, procedure() begin
+                Setup.Enabled := false;
+                btnTest.Enabled := false;
+                Log('An IMPORT exception was caught');
+                Log('Class : ' + E.ClassName);
+                Log('Error : ' + E.Message);
+              end);
+              end;
+            end;
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            {$IFDEF USEBOTO3}
+            Log('Attempting to Install Boto3');
+            try
+              Boto3.Install();
+            except
+            on E: Exception do begin
+              TThread.Queue(nil, procedure() begin
+                Setup.Enabled := false;
+                btnTest.Enabled := false;
+                Log('An IMPORT exception was caught');
+                Log('Class : ' + E.ClassName);
+                Log('Error : ' + E.Message);
+              end);
+              end;
+            end;
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            {$IFDEF USEONNXRUNTIME}
+            Log('Attempting to Install ONNXRuntime');
+            try
+              ONNXRuntime.Install();
+            except
+            on E: Exception do begin
+              TThread.Queue(nil, procedure() begin
+                Setup.Enabled := false;
+                btnTest.Enabled := false;
+                Log('An IMPORT exception was caught');
+                Log('Class : ' + E.ClassName);
+                Log('Error : ' + E.Message);
+              end);
+              end;
+            end;
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            {$IFDEF USENUMPY}
+            Log('Attempting to Install NumPy');
+            try
+              NumPy.Install();
+            except
+            on E: Exception do begin
+              TThread.Queue(nil, procedure() begin
+                Setup.Enabled := false;
+                btnTest.Enabled := false;
+                Log('An IMPORT exception was caught');
+                Log('Class : ' + E.ClassName);
+                Log('Error : ' + E.Message);
+              end);
+              end;
+            end;
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            {$IFDEF USETORCH}
+            Log('Attempting to Install Torch');
+            {$IFDEF CPUX64}
+            MaskFPUExceptions(true);
+            {$ENDIF}
+            try
+             Torch.Install();
+            except
+            on E: Exception do begin
+              TThread.Queue(nil, procedure() begin
+                Setup.Enabled := false;
+                btnTest.Enabled := false;
+                Log('An IMPORT exception was caught');
+                Log('Class : ' + E.ClassName);
+                Log('Error : ' + E.Message);
+              end);
+              end;
+            end;
             {$IFDEF CPUX64}
             MaskFPUExceptions(false);
             {$ENDIF}
+            Log('Finished Installing Torch');
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            {$IFDEF USETORCHVISION}
+            Log('Attempting to Install TorchVision');
+            {$IFDEF CPUX64}
+            MaskFPUExceptions(true);
+            {$ENDIF}
+            try
+             TorchVision.Install();
+            except
+            on E: Exception do begin
+              TThread.Queue(nil, procedure() begin
+                Setup.Enabled := false;
+                btnTest.Enabled := false;
+                Log('An IMPORT exception was caught');
+                Log('Class : ' + E.ClassName);
+                Log('Error : ' + E.Message);
+              end);
+              end;
+            end;
+            {$IFDEF CPUX64}
+            MaskFPUExceptions(false);
+            {$ENDIF}
+            Log('Finished Installing Torch');
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            {$IFDEF USEPSUTIL}
+            Log('Attempting to Install PSUtil');
+            try
+              PSUtil.Install();
+            except
+            on E: Exception do begin
+              TThread.Queue(nil, procedure() begin
+                Setup.Enabled := false;
+                btnTest.Enabled := false;
+                Log('An IMPORT exception was caught');
+                Log('Class : ' + E.ClassName);
+                Log('Error : ' + E.Message);
+              end);
+              end;
+            end;
+            Log('Finished Installing PSUtil');
+            FTask.CheckCanceled();
+            {$ENDIF}
+
+            TThread.Queue(nil, procedure() begin
+              try
+                try
+                  try
+                    {$IFDEF USENUMPY}
+                    Log('Importing NumPy');
+                    NumPy.Import();
+                    {$ENDIF}
+                    {$IFDEF USETORCH}
+                    Log('Importing Torch');
+                    {$IFDEF CPUX64}
+                    MaskFPUExceptions(true);
+                    {$ENDIF}
+                    Torch.Import();
+                    {$ENDIF}
+                    {$IFDEF USEPSUTIL}
+                    Log('Importing PSUtil');
+                    PSUtil.Import();
+                    {$ENDIF}
+                  except
+                  on E: Exception do begin
+                    TThread.Queue(nil, procedure() begin
+                      Setup.Enabled := false;
+                      btnTest.Enabled := false;
+                      Log('An IMPORT exception was caught');
+                      Log('Class : ' + E.ClassName);
+                      Log('Error : ' + E.Message);
+                    end);
+                    end;
+                  end;
+                finally
+                  {$IFDEF CPUX64}
+                  MaskFPUExceptions(false);
+                  {$ENDIF}
+                end;
+              finally
+                Setup.Enabled := true;
+                btnTest.Enabled := true;
+              end;
+              Log('All done!');
+            end);
+
+
+
+          end
+
+        else
+          begin
+            Log('Activation failed');
+            Exit;
           end;
-        finally
-          Setup.Enabled := true;
-          btnTest.Enabled := true;
-        end;
-        Log('All done!');
       end);
+
+      FTask.CheckCanceled();
+
     except
       on E: Exception do begin
         TThread.Queue(nil, procedure() begin
