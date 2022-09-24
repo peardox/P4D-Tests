@@ -26,7 +26,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-macos-3.9.12-x86_64.zip" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-macos-3.9.12-x86_64.zip" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX.app\Contents\MacOS\</RemoteDir>
             <RemoteName>python3-macos-3.9.12-x86_64.zip</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -36,7 +36,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-macos-3.9.12-x86_64.zip" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-macos-3.9.12-x86_64.zip" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX.app\Contents\MacOS\</RemoteDir>
             <RemoteName>python3-macos-3.9.12-x86_64.zip</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -76,7 +76,7 @@
         </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='Win32'">
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-windows-3.9.12-win32.zip" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-windows-3.9.12-win32.zip" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\</RemoteDir>
             <RemoteName>python3-windows-3.9.12-win32.zip</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -86,7 +86,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-windows-3.9.12-win32.zip" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-windows-3.9.12-win32.zip" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\</RemoteDir>
             <RemoteName>python3-windows-3.9.12-win32.zip</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -136,16 +136,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-macos-3.9.12-universal2.zip" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX.app\Contents\MacOS\</RemoteDir>
-            <RemoteName>python3-macos-3.9.12-universal2.zip</RemoteName>
-            <DeployClass>Python</DeployClass>
-            <Operation>0</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-            <Required>True</Required>
-        </DeployFile>
         <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-macos-3.9.12-universal2.zip" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX.app\Contents\MacOS\</RemoteDir>
             <RemoteName>python3-macos-3.9.12-universal2.zip</RemoteName>
@@ -156,19 +146,29 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="OSXARM64\Debug\HelloCPUFMX.info.plist" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX.app\Contents\</RemoteDir>
-            <RemoteName>Info.plist</RemoteName>
-            <DeployClass>ProjectOSXInfoPList</DeployClass>
-            <Operation>1</Operation>
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-macos-3.9.12-universal2.zip" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX.app\Contents\MacOS\</RemoteDir>
+            <RemoteName>python3-macos-3.9.12-universal2.zip</RemoteName>
+            <DeployClass>Python</DeployClass>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
+            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="OSXARM64\Debug\HelloCPUFMX.dSYM" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX.app\..\$(PROJECTNAME).app.dSYM\Contents\Resources\DWARF\</RemoteDir>
             <RemoteName>HelloCPUFMX</RemoteName>
             <DeployClass>ProjectOSXDebug</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="OSXARM64\Debug\HelloCPUFMX.info.plist" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX.app\Contents\</RemoteDir>
+            <RemoteName>Info.plist</RemoteName>
+            <DeployClass>ProjectOSXInfoPList</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -185,7 +185,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\res\drawable-hdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon72</DeployClass>
@@ -194,7 +194,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\res\drawable-hdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon72</DeployClass>
@@ -212,28 +212,19 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="Android64\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\res\drawable\</RemoteDir>
+            <RemoteName>splash_image_def.xml</RemoteName>
+            <DeployClass>AndroidSplashImageDef</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon144</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon48</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon48</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -248,19 +239,19 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android64\Release\splash_image_def.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\res\drawable\</RemoteDir>
-            <RemoteName>splash_image_def.xml</RemoteName>
-            <DeployClass>AndroidSplashImageDef</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon48</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\res\drawable-large\</RemoteDir>
-            <RemoteName>splash_image.png</RemoteName>
-            <DeployClass>Android_SplashImage640</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon48</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -275,15 +266,14 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Release' And '$(AndroidAppBundle)'=='true'">
-            <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>python3.9</RemoteName>
-            <DeployClass>Python</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_640x480.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\res\drawable-large\</RemoteDir>
+            <RemoteName>splash_image.png</RemoteName>
+            <DeployClass>Android_SplashImage640</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
-            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Debug' And '$(AndroidAppBundle)'=='true'">
             <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
@@ -295,10 +285,10 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="Android64\Debug\libHelloCPUFMX.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
-            <RemoteName>libHelloCPUFMX.so</RemoteName>
-            <DeployClass>ProjectOutput</DeployClass>
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Release' And '$(AndroidAppBundle)'=='true'">
+            <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>python3.9</RemoteName>
+            <DeployClass>Python</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -322,6 +312,16 @@
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android64\Debug\libHelloCPUFMX.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
+            <RemoteName>libHelloCPUFMX.so</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="$(BDS)\lib\android\debug\mips\libnative-activity.so" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\library\lib\mips\</RemoteDir>
@@ -359,6 +359,15 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="$(BDS)\lib\android\debug\armeabi-v7a\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
+            <RemoteName>libHelloCPUFMX.so</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiv7aFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="Android64\Release\styles-v21.xml" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\res\values-v21\</RemoteDir>
             <RemoteName>styles.xml</RemoteName>
@@ -372,15 +381,6 @@
             <RemoteDir>HelloCPUFMX\res\drawable-ldpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <DeployClass>Android_LauncherIcon36</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\armeabi-v7a\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
-            <RemoteName>libHelloCPUFMX.so</RemoteName>
-            <DeployClass>AndroidLibnativeArmeabiv7aFile</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -404,7 +404,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\libpython3.9.so" Condition="'$(Config)'=='Release' And '$(AndroidAppBundle)'=='true'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\libpython3.9.so" Condition="'$(Config)'=='Debug' And '$(AndroidAppBundle)'=='true'">
             <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>libpython3.9.so</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -414,7 +414,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\libpython3.9.so" Condition="'$(Config)'=='Debug' And '$(AndroidAppBundle)'=='true'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\libpython3.9.so" Condition="'$(Config)'=='Release' And '$(AndroidAppBundle)'=='true'">
             <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>libpython3.9.so</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -433,7 +433,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm64.zip" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm64.zip" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\assets\internal\</RemoteDir>
             <RemoteName>python3-android-3.9.12-arm64.zip</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -443,7 +443,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm64.zip" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm64.zip" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\assets\internal\</RemoteDir>
             <RemoteName>python3-android-3.9.12-arm64.zip</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -461,6 +461,16 @@
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="Android64\Release\libHelloCPUFMX.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
+            <RemoteName>libHelloCPUFMX.so</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_192x192.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\res\drawable-xxxhdpi\</RemoteDir>
@@ -480,16 +490,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android64\Release\libHelloCPUFMX.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
-            <RemoteName>libHelloCPUFMX.so</RemoteName>
-            <DeployClass>ProjectOutput</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-            <Required>True</Required>
-        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_48x48.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\res\drawable-xhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
@@ -508,15 +508,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\library\lib\armeabi\</RemoteDir>
-            <RemoteName>libHelloCPUFMX.so</RemoteName>
-            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\library\lib\armeabi\</RemoteDir>
             <RemoteName>libHelloCPUFMX.so</RemoteName>
@@ -526,7 +517,16 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\python3.9" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(BDS)\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\library\lib\armeabi\</RemoteDir>
+            <RemoteName>libHelloCPUFMX.so</RemoteName>
+            <DeployClass>AndroidLibnativeArmeabiFile</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\python3.9" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
             <RemoteName>python3.9</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -536,7 +536,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\python3.9" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\python3.9" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
             <RemoteName>python3.9</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -555,10 +555,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon36</DeployClass>
+        <DeployFile Include="Android64\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\</RemoteDir>
+            <RemoteName>AndroidManifest.xml</RemoteName>
+            <DeployClass>ProjectAndroidManifest</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -573,10 +573,10 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android64\Release\AndroidManifest.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>HelloCPUFMX\</RemoteDir>
-            <RemoteName>AndroidManifest.xml</RemoteName>
-            <DeployClass>ProjectAndroidManifest</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_36x36.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>HelloCPUFMX\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon36</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -590,6 +590,16 @@
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\libpython3.9.so" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
+            <RemoteName>libpython3.9.so</RemoteName>
+            <DeployClass>Python</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\libpython3.9.so" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
@@ -628,11 +638,11 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm64\libpython3.9.so" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX\library\lib\arm64-v8a\</RemoteDir>
-            <RemoteName>libpython3.9.so</RemoteName>
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm.zip" Condition="'$(Config)'=='Debug' And '$(AndroidAppBundle)'=='true'">
+            <RemoteDir>HelloCPUFMX\assets\internal\</RemoteDir>
+            <RemoteName>python3-android-3.9.12-arm.zip</RemoteName>
             <DeployClass>Python</DeployClass>
-            <Operation>1</Operation>
+            <Operation>0</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
@@ -648,15 +658,14 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm.zip" Condition="'$(Config)'=='Debug' And '$(AndroidAppBundle)'=='true'">
-            <RemoteDir>HelloCPUFMX\assets\internal\</RemoteDir>
-            <RemoteName>python3-android-3.9.12-arm.zip</RemoteName>
-            <DeployClass>Python</DeployClass>
-            <Operation>0</Operation>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_24x24.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_notification.png</RemoteName>
+            <DeployClass>Android_NotificationIcon24</DeployClass>
+            <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
-            <Required>True</Required>
         </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_24x24.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\res\drawable-mdpi\</RemoteDir>
@@ -667,16 +676,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_24x24.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_notification.png</RemoteName>
-            <DeployClass>Android_NotificationIcon24</DeployClass>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\res\drawable-xlarge\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage960</DeployClass>
@@ -685,7 +685,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_SplashImage_960x720.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\res\drawable-xlarge\</RemoteDir>
             <RemoteName>splash_image.png</RemoteName>
             <DeployClass>Android_SplashImage960</DeployClass>
@@ -730,7 +730,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon72</DeployClass>
@@ -739,7 +739,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_NotificationIcon_72x72.png" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_notification.png</RemoteName>
             <DeployClass>Android_NotificationIcon72</DeployClass>
@@ -822,7 +822,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm.zip" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm.zip" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\assets\internal\</RemoteDir>
             <RemoteName>python3-android-3.9.12-arm.zip</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -832,7 +832,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm.zip" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-android-3.9.12-arm.zip" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\assets\internal\</RemoteDir>
             <RemoteName>python3-android-3.9.12-arm.zip</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -878,19 +878,19 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android\Debug\classes.dex" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX\classes\</RemoteDir>
-            <RemoteName>classes.dex</RemoteName>
-            <DeployClass>AndroidClassesDexFile</DeployClass>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\res\drawable-ldpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <DeployClass>Android_LauncherIcon36</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_36x36.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX\res\drawable-ldpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon36</DeployClass>
+        <DeployFile Include="Android\Debug\classes.dex" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\classes\</RemoteDir>
+            <RemoteName>classes.dex</RemoteName>
+            <DeployClass>AndroidClassesDexFile</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -905,7 +905,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>python3.9</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -915,7 +915,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\python3.9" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>python3.9</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -962,19 +962,19 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_192x192.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX\res\drawable-xxxhdpi\</RemoteDir>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon192</DeployClass>
+            <DeployClass>Android_LauncherIcon144</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>HelloCPUFMX\res\drawable-xxhdpi\</RemoteDir>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_192x192.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\res\drawable-xxxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
-            <DeployClass>Android_LauncherIcon144</DeployClass>
+            <DeployClass>Android_LauncherIcon192</DeployClass>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -1034,7 +1034,7 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\libpython3.9.so" Condition="'$(Config)'=='Release'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\libpython3.9.so" Condition="'$(Config)'=='Debug'">
             <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>libpython3.9.so</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -1044,7 +1044,7 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\libpython3.9.so" Condition="'$(Config)'=='Debug'">
+        <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\android\3.9.12\arm\libpython3.9.so" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\library\lib\armeabi-v7a\</RemoteDir>
             <RemoteName>libpython3.9.so</RemoteName>
             <DeployClass>Python</DeployClass>
@@ -1078,6 +1078,16 @@
         </DeployFile>
     </ItemGroup>
     <ItemGroup Condition="'$(Platform)'=='Linux64'">
+        <DeployFile Include="Linux64\Debug\HelloCPUFMX" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>HelloCPUFMX\</RemoteDir>
+            <RemoteName>HelloCPUFMX</RemoteName>
+            <DeployClass>ProjectOutput</DeployClass>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+            <Required>True</Required>
+        </DeployFile>
         <DeployFile Include="$(PYTHONENVIRONMENTDIR)\python\python3-linux-3.9.12-x86_64.zip" Condition="'$(Config)'=='Release'">
             <RemoteDir>HelloCPUFMX\</RemoteDir>
             <RemoteName>python3-linux-3.9.12-x86_64.zip</RemoteName>
